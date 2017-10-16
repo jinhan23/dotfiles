@@ -1,0 +1,210 @@
+;;; package --- Summary
+;;; Commentary:
+
+;;; Code:
+;;frame size
+(add-to-list 'default-frame-alist '(height . 56))
+(add-to-list 'default-frame-alist '(width . 85))
+(set-frame-position (selected-frame) 0 0)
+
+;;melpa settings
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/"))
+;; (when (< emacs-major-version 24)
+;;   ;; For important compatibility libraries like cl-lib
+;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+
+;; for use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(setq use-package-always-ensure t) ;;when package install need
+
+(xterm-mouse-mode t)
+
+;;themes
+(use-package color-theme-sanityinc-tomorrow
+  :config
+  (let* ((night-color (assoc 'night color-theme-sanityinc-tomorrow-colors))
+         (selection-color (assoc 'selection night-color)))
+    (setf (cdr selection-color) "#3a3a3a"))
+  (load-theme 'sanityinc-tomorrow-night t))
+
+;;lisp settings
+(use-package paredit
+  :config
+  (mapc (lambda (mode)
+          (let ((hook (intern (concat (symbol-name mode)
+                                      "-mode-hook"))))
+            (add-hook hook (lambda () (paredit-mode 1)))
+            (add-hook hook (lambda () (electric-pair-mode nil)))))
+        '(emacs-lisp inferior-lisp slime lisp-interaction scheme)))
+
+;;rainbow-delimiters
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+;;elpy
+(use-package elpy
+  :init
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -i")
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq gud-pdb-command-name "python -m pdb")
+              (global-set-key [f4] 'pdb)))
+  :config
+  (elpy-enable)
+  ;;(elpy-use-ipython)
+  (defun ipy-clear ()
+    (interactive)
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer)))
+  (setq elpy-rpc-backend "jedi")
+  )
+
+;;company
+(use-package company-irony)
+(use-package company-c-headers)
+(use-package company-jedi)
+(use-package company
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'inferior-python-mode-hook (lambda () (company-mode -1)))
+  (defun company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'company-jedi-hook)
+
+  (setq company-dabbrev-downcase 0)
+  (setq company-idle-delay 0.01)
+  (setq company-minimum-prefix-length 1)
+  (defun company-yasnippet-or-completion ()
+    "Solve company yasnippet conflicts."
+    (interactive)
+    (let ((yas-fallback-behavior
+           (apply 'company-complete-common nil)))
+      (yas-expand)))
+  (with-eval-after-load 'company
+    (dolist (key '("<return>" "RET"))
+      (define-key company-active-map (kbd key)
+        `(menu-item nil company-complete
+                    :filter ,(lambda (cmd)
+                               (when (company-explicit-action-p)
+                                 cmd)))))
+    (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
+    (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+    (define-key company-active-map (kbd "S-TAB") 'yas-expand)
+    (define-key company-active-map (kbd "S-<tab>") 'yas-expand)))
+
+(use-package cl-lib
+  :config
+  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+    "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+    (cl-letf (((symbol-function #'process-list) (lambda ())))
+      ad-do-it)))
+
+(use-package irony-eldoc)
+(use-package irony
+  :init
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (set (make-local-variable 'compile-command)
+                   (let ((file (file-name-nondirectory buffer-file-name)))
+                     (format "%s %s -o %s.out -g"
+                             "gcc"
+                             file
+                             (file-name-sans-extension file))))))
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (set (make-local-variable 'compile-command)
+                   (let ((file (file-name-nondirectory buffer-file-name)))
+                     (format "%s %s -o %s.out -g"
+                             "g++"
+                             file
+                             (file-name-sans-extension file))))))
+  :config
+  (yas-global-mode 1)
+  (when (boundp 'w32-pipe-read-delay)
+    (setq w32-pipe-read-delay 0))
+  (when (boundp 'w32-pipe-buffer-size)
+    (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
+  (mapc (lambda (mode)
+          (let ((hook (intern (concat (symbol-name mode)
+                                      "-mode-hook"))))
+            ;;(add-hook hook (lambda () (autopair-mode 1)))
+            (add-hook hook (lambda () (irony-mode 1) (irony-eldoc 1)))
+            (add-hook hook (lambda () (add-to-list 'company-backends 'company-irony)))
+            (add-hook hook (lambda () (global-set-key [f4] 'gdb)))))
+        '(c c++))
+  ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  )
+
+(use-package flycheck
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+(use-package flycheck-pyflakes)
+(use-package multiple-cursors
+  :config
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-S-c C-<") 'mc/mark-all-like-this)
+  )
+
+;; (use-package smartparens
+;;   :config
+;;   (add-hook 'prog-mode-hook 'smartparens-mode))
+
+;;UI settings
+(add-hook 'prog-mode-hook 'electric-pair-mode) ;;parenthesis completion
+(show-paren-mode 1) ;;show paren mode
+(setq show-paren-delay 0)
+(setq inhibit-startup-screen t) ;;skip startup screen and specify default mode
+(setq initial-major-mode 'python-mode)
+(setq initial-scratch-message "")
+(display-time) ;;show time on status bar
+(transient-mark-mode t) ;; show selected area
+(global-linum-mode t) ;; show line numbers
+(setq column-number-mode t) ;; show column number
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(defvaralias 'c-basic-offset 'tab-width)
+
+;;shortcuts
+(global-set-key [C-kanji] 'set-mark-command) ;;for windows
+
+(global-set-key [f3] 'compile)
+(global-set-key [f4] 'gdb)
+
+(global-set-key [f7] 'python-indent-shift-left)
+(global-set-key [f8] 'python-indent-shift-right)
+;;(global-set-key [f7] 'previous-buffer)
+;;(global-set-key [f8] 'next-buffer)
+
+(global-set-key [f12] 'shell)
+
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
+;;emacs windows
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 130 :width normal)))))
+
+;;korean environment
+(set-language-environment "Korean")
+(prefer-coding-system 'utf-8)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
