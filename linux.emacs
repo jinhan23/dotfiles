@@ -143,11 +143,14 @@
   )
 
 (use-package flycheck-pos-tip)
+(use-package flycheck-popup-tip)
 (use-package flycheck
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (with-eval-after-load 'flycheck
-    (flycheck-pos-tip-mode)))
+    (if (display-graphic-p)
+        (flycheck-pos-tip-mode)
+      (flycheck-popup-tip-mode))))
 (use-package flycheck-pyflakes)
 (use-package multiple-cursors
   :config
