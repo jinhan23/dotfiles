@@ -63,6 +63,7 @@
     (interactive)
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
+  (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
   )
 
