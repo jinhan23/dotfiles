@@ -58,13 +58,13 @@
               (global-set-key [f4] 'pdb)))
   :config
   (elpy-enable)
-  ;;(elpy-use-ipython)
   (defun ipy-clear ()
     (interactive)
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
   )
 
 ;;company
@@ -147,7 +147,7 @@
 (use-package flycheck-popup-tip)
 (use-package flycheck
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
   (with-eval-after-load 'flycheck
     (if (display-graphic-p)
         (flycheck-pos-tip-mode)
