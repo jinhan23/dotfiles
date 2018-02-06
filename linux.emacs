@@ -5,7 +5,7 @@
 ;;frame size
 (add-to-list 'default-frame-alist '(height . 56))
 (add-to-list 'default-frame-alist '(width . 85))
-(set-frame-position (selected-frame) 0 0)
+(set-frame-position (selected-frame) 2000 0)
 
 ;;melpa settings
 (require 'package) ;; You might already have this line
@@ -186,8 +186,8 @@
 (global-set-key [f3] 'compile)
 (global-set-key [f4] 'gdb)
 
-(global-set-key [f7] 'python-indent-shift-left)
-(global-set-key [f8] 'python-indent-shift-right)
+(global-set-key (kbd "C-,") 'python-indent-shift-left)
+(global-set-key (kbd "C-.") 'python-indent-shift-right)
 ;;(global-set-key [f7] 'previous-buffer)
 ;;(global-set-key [f8] 'next-buffer)
 
