@@ -55,7 +55,7 @@
   (add-hook 'python-mode-hook
             (lambda ()
               (setq gud-pdb-command-name "python -m pdb")
-              (global-set-key [f4] 'pdb)))
+              (global-set-key [f6] 'pdb)))
   :config
   (elpy-enable)
   (defun ipy-clear ()
@@ -138,7 +138,7 @@
             ;;(add-hook hook (lambda () (autopair-mode 1)))
             (add-hook hook (lambda () (irony-mode 1) (irony-eldoc 1)))
             (add-hook hook (lambda () (add-to-list 'company-backends 'company-irony)))
-            (add-hook hook (lambda () (global-set-key [f4] 'gdb)))))
+            (add-hook hook (lambda () (global-set-key [f6] 'gdb)))))
         '(c c++))
   ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   )
@@ -183,11 +183,11 @@
 ;;shortcuts
 (global-set-key [C-kanji] 'set-mark-command) ;;for windows
 
-(global-set-key [f3] 'compile)
-(global-set-key [f4] 'gdb)
+(global-set-key [f5] 'compile)
+(global-set-key [f6] 'gdb)
 
-(global-set-key (kbd "C-,") 'python-indent-shift-left)
-(global-set-key (kbd "C-.") 'python-indent-shift-right)
+(global-set-key [f3] 'python-indent-shift-left)
+(global-set-key [f4] 'python-indent-shift-right)
 ;;(global-set-key [f7] 'previous-buffer)
 ;;(global-set-key [f8] 'next-buffer)
 
