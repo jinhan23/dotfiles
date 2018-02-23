@@ -31,6 +31,9 @@
          (selection-color (assoc 'selection night-color)))
     (setf (cdr selection-color) "#3a3a3a"))
   (load-theme 'sanityinc-tomorrow-night t))
+;; (use-package seoul256-theme
+;;   :config
+;;   (load-theme 'seoul256 t))
 
 ;;lisp settings
 (use-package paredit
