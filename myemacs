@@ -5,7 +5,7 @@
 ;;frame size
 (add-to-list 'default-frame-alist '(height . 56))
 (add-to-list 'default-frame-alist '(width . 85))
-(set-frame-position (selected-frame) 2000 0)
+(set-frame-position (selected-frame) 0 0)
 
 ;;melpa settings
 (require 'package) ;; You might already have this line
@@ -68,6 +68,10 @@
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
   (remove-hook 'elpy-modules 'elpy-module-flymake)
+  (add-hook 'prog-mode-hook 'highlight-indentation-mode)
+  (add-hook 'prog-mode-hook 'highlight-indentation-current-column-mode)
+  (set-face-background 'highlight-indentation-face "#262626")
+  (set-face-background 'highlight-indentation-current-column-face "#444444")
   )
 
 ;;company
