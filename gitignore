@@ -205,3 +205,6 @@ log/
 memory.p
 test.py
 *.npy
+
+#ipynb
+*.ipynb
