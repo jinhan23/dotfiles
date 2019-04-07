@@ -58,6 +58,7 @@ flycheck_*.el
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+.idea
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
@@ -207,6 +208,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+sandbox.ipynb # to update manually
 
 # IPython
 profile_default/
@@ -270,6 +272,7 @@ tags
 [._]*.un~
 
 ### VisualStudioCode ###
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -283,4 +286,4 @@ tags
 # End of https://www.gitignore.io/api/vim,emacs,python,pycharm,visualstudiocode
 
 test*
-secret*
+privacy*
