@@ -10,7 +10,7 @@
 ;;melpa settings
 (require 'package) ;; You might already have this line
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
+             '("melpa" . "https://melpa.org/packages/"))
 ;; (when (< emacs-major-version 24)
 ;;   ;; For important compatibility libraries like cl-lib
 ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
@@ -22,7 +22,7 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t) ;;when package install need
 
-(xterm-mouse-mode t)
+;; (xterm-mouse-mode t)
 
 ;;themes
 (use-package color-theme-sanityinc-tomorrow
@@ -181,7 +181,7 @@
 (setq initial-scratch-message "")
 (display-time) ;;show time on status bar
 (transient-mark-mode t) ;; show selected area
-(global-linum-mode t) ;; show line numbers
+;; (global-linum-mode t) ;; show line numbers
 (setq column-number-mode t) ;; show column number
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
