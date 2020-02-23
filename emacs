@@ -22,7 +22,7 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t) ;;when package install need
 
-;; (xterm-mouse-mode t)
+(xterm-mouse-mode t)
 
 ;;themes
 (use-package color-theme-sanityinc-tomorrow
@@ -181,7 +181,7 @@
 (setq initial-scratch-message "")
 (display-time) ;;show time on status bar
 (transient-mark-mode t) ;; show selected area
-;; (global-linum-mode t) ;; show line numbers
+(global-linum-mode t) ;; show line numbers
 (setq column-number-mode t) ;; show column number
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
