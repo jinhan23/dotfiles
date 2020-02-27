@@ -20,6 +20,8 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+
+(require 'use-package-ensure)
 (setq use-package-always-ensure t) ;;when package install need
 
 (xterm-mouse-mode t)
@@ -73,6 +75,19 @@
   (set-face-background 'highlight-indentation-face "#262626")
   (set-face-background 'highlight-indentation-current-column-face "#444444")
   )
+
+;;isort and black formatting
+(use-package py-isort
+  :init
+  (add-hook 'before-save-hook 'py-isort-before-save)
+  ;; (setq py-isort-options '("--lines=100"))
+  )
+
+(use-package python-black
+  :demand t
+  :after python
+  :config
+  (add-hook 'python-mode-hook (lambda () (python-black-on-save-mode 1))))
 
 ;;company
 (use-package company-irony)
