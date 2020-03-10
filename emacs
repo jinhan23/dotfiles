@@ -169,7 +169,7 @@
 (use-package flycheck-popup-tip)
 (use-package flycheck
   :config
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   (with-eval-after-load 'flycheck
     (if (display-graphic-p)
         (flycheck-pos-tip-mode)
