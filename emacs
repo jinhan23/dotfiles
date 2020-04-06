@@ -79,7 +79,7 @@
 ;;isort and black formatting
 (use-package py-isort
   :init
-  (add-hook 'before-save-hook 'py-isort-before-save)
+  ;; (add-hook 'before-save-hook 'py-isort-before-save)
   ;; (setq py-isort-options '("--lines=100"))
   )
 
@@ -169,7 +169,7 @@
 (use-package flycheck-popup-tip)
 (use-package flycheck
   :config
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   (with-eval-after-load 'flycheck
     (if (display-graphic-p)
         (flycheck-pos-tip-mode)
@@ -235,4 +235,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
+    (python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
