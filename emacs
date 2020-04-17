@@ -101,26 +101,27 @@
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'company-jedi-hook)
 
-  (setq company-dabbrev-downcase 0)
-  (setq company-idle-delay 0.01)
-  (setq company-minimum-prefix-length 1)
-  (defun company-yasnippet-or-completion ()
-    "Solve company yasnippet conflicts."
-    (interactive)
-    (let ((yas-fallback-behavior
-           (apply 'company-complete-common nil)))
-      (yas-expand)))
-  (with-eval-after-load 'company
-    (dolist (key '("<return>" "RET"))
-      (define-key company-active-map (kbd key)
-        `(menu-item nil company-complete
-                    :filter ,(lambda (cmd)
-                               (when (company-explicit-action-p)
-                                 cmd)))))
-    (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
-    (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-    (define-key company-active-map (kbd "S-TAB") 'yas-expand)
-    (define-key company-active-map (kbd "S-<tab>") 'yas-expand)))
+  ;; (setq company-dabbrev-downcase 0)
+  ;; (setq company-idle-delay 0.01)
+  ;; (setq company-minimum-prefix-length 1)
+  ;; (defun company-yasnippet-or-completion ()
+  ;;   "Solve company yasnippet conflicts."
+  ;;   (interactive)
+  ;;   (let ((yas-fallback-behavior
+  ;;          (apply 'company-complete-common nil)))
+  ;;     (yas-expand)))
+  ;; (with-eval-after-load 'company
+  ;;   (dolist (key '("<return>" "RET"))
+  ;;     (define-key company-active-map (kbd key)
+  ;;       `(menu-item nil company-complete
+  ;;                   :filter ,(lambda (cmd)
+  ;;                              (when (company-explicit-action-p)
+  ;;                                cmd)))))
+  ;;   (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
+  ;;   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+  ;;   (define-key company-active-map (kbd "S-TAB") 'yas-expand)
+  ;;   (define-key company-active-map (kbd "S-<tab>") 'yas-expand))
+  )
 
 (use-package cl-lib
   :config
