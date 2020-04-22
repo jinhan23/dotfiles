@@ -45,6 +45,7 @@
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "C-M-i") #'company-complete)
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.01)
   (setq company-minimum-prefix-length 1)
@@ -66,6 +67,11 @@
   ;;   (define-key company-active-map (kbd "S-TAB") 'yas-expand)
   ;;   (define-key company-active-map (kbd "S-<tab>") 'yas-expand))
   )
+
+;;helm
+(use-package helm
+  :config
+  (helm-mode 1))
 
 
 ;;lisp settings
@@ -255,4 +261,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
+    (helm python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
