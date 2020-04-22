@@ -37,6 +37,37 @@
 ;;   :config
 ;;   (load-theme 'seoul256 t))
 
+
+;;company
+(use-package company-irony)
+(use-package company-c-headers)
+(use-package company-jedi)
+(use-package company
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0.01)
+  (setq company-minimum-prefix-length 1)
+  ;; (defun company-yasnippet-or-completion ()
+  ;;   "Solve company yasnippet conflicts."
+  ;;   (interactive)
+  ;;   (let ((yas-fallback-behavior
+  ;;          (apply 'company-complete-common nil)))
+  ;;     (yas-expand)))
+  ;; (with-eval-after-load 'company
+  ;;   (dolist (key '("<return>" "RET"))
+  ;;     (define-key company-active-map (kbd key)
+  ;;       `(menu-item nil company-complete
+  ;;                   :filter ,(lambda (cmd)
+  ;;                              (when (company-explicit-action-p)
+  ;;                                cmd)))))
+  ;;   (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
+  ;;   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+  ;;   (define-key company-active-map (kbd "S-TAB") 'yas-expand)
+  ;;   (define-key company-active-map (kbd "S-<tab>") 'yas-expand))
+  )
+
+
 ;;lisp settings
 (use-package paredit
   :config
@@ -50,7 +81,6 @@
 ;;racket
 (use-package racket-mode)
 
-
 ;;hy settings
 (use-package hy-mode
   :config
@@ -59,7 +89,7 @@
               (global-set-key (kbd "C-c C-c") 'hy-shell-eval-buffer)
               (paredit-mode 1)
               (company-mode 1)
-              (add-to-list 'company-backends '(company-hy :with company-dabbrev)))))
+              (add-to-list 'company-backends '(company-hy :with company-dabbrev-code)))))
 
 
 
@@ -111,35 +141,6 @@
   :after python
   :config
   (add-hook 'python-mode-hook (lambda () (python-black-on-save-mode 1))))
-
-;;company
-(use-package company-irony)
-(use-package company-c-headers)
-(use-package company-jedi)
-(use-package company
-  :config
-  (add-hook 'after-init-hook 'global-company-mode)
-
-  (setq company-idle-delay 0.01)
-  (setq company-minimum-prefix-length 1)
-  ;; (defun company-yasnippet-or-completion ()
-  ;;   "Solve company yasnippet conflicts."
-  ;;   (interactive)
-  ;;   (let ((yas-fallback-behavior
-  ;;          (apply 'company-complete-common nil)))
-  ;;     (yas-expand)))
-  ;; (with-eval-after-load 'company
-  ;;   (dolist (key '("<return>" "RET"))
-  ;;     (define-key company-active-map (kbd key)
-  ;;       `(menu-item nil company-complete
-  ;;                   :filter ,(lambda (cmd)
-  ;;                              (when (company-explicit-action-p)
-  ;;                                cmd)))))
-  ;;   (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
-  ;;   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-  ;;   (define-key company-active-map (kbd "S-TAB") 'yas-expand)
-  ;;   (define-key company-active-map (kbd "S-<tab>") 'yas-expand))
-  )
 
 (use-package cl-lib
   :config
