@@ -45,12 +45,35 @@
                                       "-mode-hook"))))
             (add-hook hook (lambda () (paredit-mode 1)))
             (add-hook hook (lambda () (electric-pair-mode nil)))))
-        '(emacs-lisp inferior-lisp slime lisp-interaction scheme)))
+        '(emacs-lisp inferior-lisp slime lisp-interaction scheme racket)))
+
+;;racket
+(use-package racket-mode)
+
+
+;;hy settings
+(use-package hy-mode
+  :config
+  (add-hook 'hy-mode-hook
+            (lambda ()
+              (global-set-key (kbd "C-c C-c") 'hy-shell-eval-buffer)
+              (paredit-mode 1)
+              (company-mode 1)
+              (add-to-list 'company-backends '(company-hy :with company-dabbrev)))))
+
+
 
 ;;rainbow-delimiters
 (use-package rainbow-delimiters
   :config
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+;;python
+  (add-hook 'inferior-python-mode-hook (lambda () (company-mode -1)))
+  (defun company-jedi-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'company-jedi-hook)
+
 
 ;;elpy
 (use-package elpy
@@ -96,14 +119,9 @@
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-  (add-hook 'inferior-python-mode-hook (lambda () (company-mode -1)))
-  (defun company-jedi-hook ()
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'company-jedi-hook)
 
-  ;; (setq company-dabbrev-downcase 0)
-  ;; (setq company-idle-delay 0.01)
-  ;; (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.01)
+  (setq company-minimum-prefix-length 1)
   ;; (defun company-yasnippet-or-completion ()
   ;;   "Solve company yasnippet conflicts."
   ;;   (interactive)
