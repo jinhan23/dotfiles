@@ -10,7 +10,7 @@
 ;;melpa settings
 (require 'package) ;; You might already have this line
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+             '("melpa" . "http://melpa.org/packages/"))
 ;; (when (< emacs-major-version 24)
 ;;   ;; For important compatibility libraries like cl-lib
 ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
@@ -126,7 +126,7 @@
     (interactive)
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
-  (setq elpy-rpc-python-command "python3")
+  (setq elpy-rpc-python-command "python")
   (setq elpy-rpc-backend "jedi")
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (add-hook 'prog-mode-hook 'highlight-indentation-mode)
@@ -249,7 +249,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 130 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono Derivative Powerline" :foundry "unknown" :slant normal :weight normal :height 120 :width normal)))))
 
 ;;korean environment
 (set-language-environment "Korean")
@@ -261,4 +261,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
+    (hy-mode helm python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
