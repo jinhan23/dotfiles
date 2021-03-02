@@ -98,4 +98,14 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias dsh='docker exec -it --detach-keys="ctrl-x,x" jh zsh'
+function dsh() {
+    if [ -n "$2" ]
+    then
+        docker exec -it --detach-keys="ctrl-x,x" "$1" "$2"
+    elif [ -n "$1" ]
+    then
+        docker exec -it --detach-keys="ctrl-x,x" "$1" zsh
+    else
+        docker exec -it --detach-keys="ctrl-x,x" jh zsh
+    fi
+}
