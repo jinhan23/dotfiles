@@ -3,17 +3,15 @@
 
 ;;; Code:
 ;;frame size
-(add-to-list 'default-frame-alist '(height . 56))
-(add-to-list 'default-frame-alist '(width . 85))
-(set-frame-position (selected-frame) 0 0)
+;; (add-to-list 'default-frame-alist '(height . 56))
+;; (add-to-list 'default-frame-alist '(width . 85))
+;; (set-frame-position (selected-frame) 0 0)
 
 ;;melpa settings
 (require 'package) ;; You might already have this line
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
-;; (when (< emacs-major-version 24)
-;;   ;; For important compatibility libraries like cl-lib
-;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize) ;; You might already have this line
 
 ;; for use-package
@@ -26,6 +24,8 @@
 
 (xterm-mouse-mode t)
 
+
+
 ;;themes
 (use-package color-theme-sanityinc-tomorrow
   :config
@@ -33,40 +33,124 @@
          (selection-color (assoc 'selection night-color)))
     (setf (cdr selection-color) "#3a3a3a"))
   (load-theme 'sanityinc-tomorrow-night t))
-;; (use-package seoul256-theme
-;;   :config
-;;   (load-theme 'seoul256 t))
 
+
+
+;; lsp-mode
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (XXX-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are helm user
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key
+    :config
+    (which-key-mode))
+
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))  ; or lsp-deferred
+
+
+
+;; treemacs
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay      0.5
+          treemacs-directory-name-transformer    #'identity
+          treemacs-display-in-side-window        t
+          treemacs-eldoc-display                 t
+          treemacs-file-event-delay              5000
+          treemacs-file-extension-regex          treemacs-last-period-regex-value
+          treemacs-file-follow-delay             0.2
+          treemacs-file-name-transformer         #'identity
+          treemacs-follow-after-init             t
+          treemacs-git-command-pipe              ""
+          treemacs-goto-tag-strategy             'refetch-index
+          treemacs-indentation                   2
+          treemacs-indentation-string            " "
+          treemacs-is-never-other-window         nil
+          treemacs-max-git-entries               5000
+          treemacs-missing-project-action        'ask
+          treemacs-move-forward-on-expand        nil
+          treemacs-no-png-images                 nil
+          treemacs-no-delete-other-windows       t
+          treemacs-project-follow-cleanup        nil
+          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                      'left
+          treemacs-read-string-input             'from-child-frame
+          treemacs-recenter-distance             0.1
+          treemacs-recenter-after-file-follow    nil
+          treemacs-recenter-after-tag-follow     nil
+          treemacs-recenter-after-project-jump   'always
+          treemacs-recenter-after-project-expand 'on-distance
+          treemacs-show-cursor                   nil
+          treemacs-show-hidden-files             t
+          treemacs-silent-filewatch              nil
+          treemacs-silent-refresh                nil
+          treemacs-sorting                       'alphabetic-asc
+          treemacs-space-between-root-nodes      t
+          treemacs-tag-follow-cleanup            t
+          treemacs-tag-follow-delay              1.5
+          treemacs-user-mode-line-format         nil
+          treemacs-user-header-line-format       nil
+          treemacs-width                         25
+          treemacs-workspace-switch-cleanup      nil)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
 
 ;;company
-(use-package company-irony)
-(use-package company-c-headers)
-(use-package company-jedi)
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "C-M-i") #'company-complete)
-  (setq company-dabbrev-downcase nil)
-  (setq company-idle-delay 0.01)
-  (setq company-minimum-prefix-length 1)
-  ;; (defun company-yasnippet-or-completion ()
-  ;;   "Solve company yasnippet conflicts."
-  ;;   (interactive)
-  ;;   (let ((yas-fallback-behavior
-  ;;          (apply 'company-complete-common nil)))
-  ;;     (yas-expand)))
-  ;; (with-eval-after-load 'company
-  ;;   (dolist (key '("<return>" "RET"))
-  ;;     (define-key company-active-map (kbd key)
-  ;;       `(menu-item nil company-complete
-  ;;                   :filter ,(lambda (cmd)
-  ;;                              (when (company-explicit-action-p)
-  ;;                                cmd)))))
-  ;;   (define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
-  ;;   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-  ;;   (define-key company-active-map (kbd "S-TAB") 'yas-expand)
-  ;;   (define-key company-active-map (kbd "S-<tab>") 'yas-expand))
-  )
+  (setq company-minimum-prefix-length 1))
 
 ;;helm
 (use-package helm
@@ -95,7 +179,7 @@
               (global-set-key (kbd "C-c C-c") 'hy-shell-eval-buffer)
               (paredit-mode 1)
               (company-mode 1)
-              (add-to-list 'company-backends '(company-hy :with company-dabbrev-code)))))
+              (add-to-list 'company-backends '(company-hy company-dabbrev-code)))))
 
 
 
@@ -104,36 +188,6 @@
   :config
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-;;python
-  (add-hook 'inferior-python-mode-hook (lambda () (company-mode -1)))
-  (defun company-jedi-hook ()
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'company-jedi-hook)
-
-
-;;elpy
-(use-package elpy
-  :init
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq gud-pdb-command-name "python -m pdb")
-              (global-set-key [f6] 'pdb)))
-  :config
-  (elpy-enable)
-  (defun ipy-clear ()
-    (interactive)
-    (let ((comint-buffer-maximum-size 0))
-      (comint-truncate-buffer)))
-  (setq elpy-rpc-python-command "python")
-  (setq elpy-rpc-backend "jedi")
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (add-hook 'prog-mode-hook 'highlight-indentation-mode)
-  (add-hook 'prog-mode-hook 'highlight-indentation-current-column-mode)
-  (set-face-background 'highlight-indentation-face "#262626")
-  (set-face-background 'highlight-indentation-current-column-face "#444444")
-  )
 
 ;;isort and black formatting
 (use-package py-isort
@@ -148,69 +202,13 @@
   :config
   (add-hook 'python-mode-hook (lambda () (python-black-on-save-mode 1))))
 
-(use-package cl-lib
-  :config
-  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-    "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-    (cl-letf (((symbol-function #'process-list) (lambda ())))
-      ad-do-it)))
 
-(use-package irony-eldoc)
-(use-package irony
-  :init
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (set (make-local-variable 'compile-command)
-                   (let ((file (file-name-nondirectory buffer-file-name)))
-                     (format "%s %s -o %s.out -g"
-                             "gcc"
-                             file
-                             (file-name-sans-extension file))))))
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (set (make-local-variable 'compile-command)
-                   (let ((file (file-name-nondirectory buffer-file-name)))
-                     (format "%s %s -o %s.out -g"
-                             "g++"
-                             file
-                             (file-name-sans-extension file))))))
-  :config
-  (yas-global-mode 1)
-  (when (boundp 'w32-pipe-read-delay)
-    (setq w32-pipe-read-delay 0))
-  (when (boundp 'w32-pipe-buffer-size)
-    (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
-  (mapc (lambda (mode)
-          (let ((hook (intern (concat (symbol-name mode)
-                                      "-mode-hook"))))
-            ;;(add-hook hook (lambda () (autopair-mode 1)))
-            (add-hook hook (lambda () (irony-mode 1) (irony-eldoc 1)))
-            (add-hook hook (lambda () (add-to-list 'company-backends 'company-irony)))
-            (add-hook hook (lambda () (global-set-key [f6] 'gdb)))))
-        '(c c++))
-  ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  )
-
-(use-package flycheck-pos-tip)
-(use-package flycheck-popup-tip)
-(use-package flycheck
-  :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  (with-eval-after-load 'flycheck
-    (if (display-graphic-p)
-        (flycheck-pos-tip-mode)
-      (flycheck-popup-tip-mode))))
-(use-package flycheck-pyflakes)
 (use-package multiple-cursors
   :config
   (global-set-key (kbd "C-M-N") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-M-P") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-M-L") 'mc/mark-all-like-this)
   )
-
-;; (use-package smartparens
-;;   :config
-;;   (add-hook 'prog-mode-hook 'smartparens-mode))
 
 ;;UI settings
 (add-hook 'prog-mode-hook 'electric-pair-mode) ;;parenthesis completion
@@ -228,20 +226,17 @@
 (defvaralias 'c-basic-offset 'tab-width)
 
 ;;shortcuts
-(global-set-key [C-kanji] 'set-mark-command) ;;for windows
+(global-set-key [C-kanji] 'set-mark-command) ;; for windows
 
 (global-set-key [f5] 'compile)
 (global-set-key [f6] 'gdb)
 
 (global-set-key [f3] 'python-indent-shift-left)
 (global-set-key [f4] 'python-indent-shift-right)
-;;(global-set-key [f7] 'previous-buffer)
-;;(global-set-key [f8] 'next-buffer)
+(global-set-key [f7] 'previous-buffer)
+(global-set-key [f8] 'next-buffer)
 
 (global-set-key [f12] 'shell)
-
-(when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings))
 
 ;;emacs windows
 (custom-set-faces
@@ -249,7 +244,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono Derivative Powerline" :foundry "unknown" :slant normal :weight normal :height 120 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono Derivative Powerline" :foundry "unknown" :slant normal :weight normal :height 130 :width normal)))))
 
 ;;korean environment
 (set-language-environment "Korean")
@@ -260,5 +255,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (hy-mode helm python-black autopair company-jedi zenburn-theme use-package rainbow-delimiters python-environment paredit multiple-cursors monokai-theme moe-theme irony-eldoc flycheck-pyflakes epc elpy company-irony company-c-headers color-theme-sanityinc-tomorrow))))
+   '(multiple-cursors python-black py-isort rainbow-delimiters hy-mode racket-mode paredit helm company color-theme-sanityinc-tomorrow use-package)))
