@@ -73,6 +73,10 @@
   :config
   (which-key-mode))
 
+;; clojure
+(use-package clojure-mode)
+(use-package cider)
+
 
 ;; python
 (use-package pyvenv
@@ -187,7 +191,7 @@
                                       "-mode-hook"))))
             (add-hook hook (lambda () (paredit-mode 1)))
             (add-hook hook (lambda () (electric-pair-mode nil)))))
-        '(emacs-lisp inferior-lisp slime lisp-interaction scheme racket)))
+        '(emacs-lisp inferior-lisp slime lisp-interaction scheme racket clojure)))
 
 ;;racket
 (use-package racket-mode)
@@ -278,4 +282,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(vscode-dark-plus-theme conda multiple-cursors python-black py-isort rainbow-delimiters hy-mode racket-mode paredit helm company color-theme-sanityinc-tomorrow use-package)))
+   (quote
+    (vscode-dark-plus-theme conda multiple-cursors python-black py-isort rainbow-delimiters hy-mode racket-mode paredit helm company color-theme-sanityinc-tomorrow use-package))))
