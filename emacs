@@ -27,13 +27,10 @@
 
 
 ;;themes
-(use-package color-theme-sanityinc-tomorrow
+(use-package vscode-dark-plus-theme
+  :ensure t
   :config
-  (let* ((night-color (assoc 'night color-theme-sanityinc-tomorrow-colors))
-         (selection-color (assoc 'selection night-color)))
-    (setf (cdr selection-color) "#3a3a3a"))
-  (load-theme 'sanityinc-tomorrow-night t))
-
+  (load-theme 'vscode-dark-plus t))
 
 
 ;; lsp-mode
@@ -41,8 +38,20 @@
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
+  (setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-lens-enable t
+      lsp-signature-auto-activate nil
+      ; lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
+      ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
+      )
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (XXX-mode . lsp)
+         (clojure-mode . lsp)
+         (clojurescript-mode . lsp)
+         (clojurerec-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
@@ -61,15 +70,22 @@
 
 ;; optional if you want which-key integration
 (use-package which-key
-    :config
-    (which-key-mode))
+  :config
+  (which-key-mode))
+
+
+;; python
+(use-package pyvenv
+  :init
+  (setenv "WORKON_HOME" (getenv "CONDA_ENVS"))
+  (pyvenv-mode 1))
 
 (use-package lsp-python-ms
   :ensure t
   :init (setq lsp-python-ms-auto-install-server t)
   :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))  ; or lsp-deferred
+                         (require 'lsp-python-ms)
+                         (lsp))))  ; or lsp-deferred
 
 
 
@@ -116,12 +132,12 @@
           treemacs-silent-filewatch              nil
           treemacs-silent-refresh                nil
           treemacs-sorting                       'alphabetic-asc
-          treemacs-space-between-root-nodes      t
+          ;; treemacs-space-between-root-nodes      t
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
           treemacs-user-header-line-format       nil
-          treemacs-width                         25
+          treemacs-width                         35
           treemacs-workspace-switch-cleanup      nil)
 
     ;; The default width and height of the icons is 22 pixels. If you are
@@ -152,6 +168,11 @@
   (add-hook 'after-init-hook 'global-company-mode)
   (setq company-minimum-prefix-length 1))
 
+;;flycheck
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
+
 ;;helm
 (use-package helm
   :config
@@ -171,12 +192,14 @@
 ;;racket
 (use-package racket-mode)
 
-;;hy settings
+;;hylang settings
 (use-package hy-mode
   :config
   (add-hook 'hy-mode-hook
             (lambda ()
               (global-set-key (kbd "C-c C-c") 'hy-shell-eval-buffer)
+              (global-set-key (kbd "C-c C-r") 'hy-shell-eval-region)
+              (global-set-key (kbd "C-x C-e") 'hy-shell-eval-last-sexp)
               (paredit-mode 1)
               (company-mode 1)
               (add-to-list 'company-backends '(company-hy company-dabbrev-code)))))
@@ -255,4 +278,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(multiple-cursors python-black py-isort rainbow-delimiters hy-mode racket-mode paredit helm company color-theme-sanityinc-tomorrow use-package)))
+   '(vscode-dark-plus-theme conda multiple-cursors python-black py-isort rainbow-delimiters hy-mode racket-mode paredit helm company color-theme-sanityinc-tomorrow use-package)))
