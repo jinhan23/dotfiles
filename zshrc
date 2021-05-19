@@ -109,3 +109,5 @@ function dsh() {
         docker exec -it --detach-keys="ctrl-x,x" jh zsh
     fi
 }
+
+export TERM=xterm-256color
